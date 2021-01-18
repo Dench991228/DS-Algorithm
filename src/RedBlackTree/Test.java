@@ -8,8 +8,9 @@ public class Test {
         Scanner sc = new Scanner(System.in);
         while(sc.hasNext()){
             red_back_tree.insertNode(sc.nextInt());
-            System.out.println(red_back_tree.containsValue(4));
-            System.out.println(red_back_tree.toString());
+            System.out.println(red_back_tree);
         }
+        red_back_tree.delete(4);
+        System.out.println(red_back_tree);
     }
 }
