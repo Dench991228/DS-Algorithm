@@ -10,7 +10,7 @@ public class Test {
             red_back_tree.insertNode(sc.nextInt());
             System.out.println(red_back_tree);
         }
-        red_back_tree.delete(4);
+        red_back_tree.delete(7);
         System.out.println(red_back_tree);
     }
 }
