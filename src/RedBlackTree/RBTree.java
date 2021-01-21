@@ -185,7 +185,7 @@ public class RBTree {
                     sibling = problemNode.getParent().getRightChild();
                 }
 
-                if(!sibling.getLeftChild().isRed()&&!sibling.getRightChild().isRed()){//x的兄弟节点有两个红色子节点把兄弟节点变成红色，然后自己往上一层
+                if(!sibling.getLeftChild().isRed()&&!sibling.getRightChild().isRed()){//x的兄弟节点有两个黑色子节点把兄弟节点变成红色，然后自己往上一层
                     sibling.setRed(true);
                     problemNode = problemNode.getParent();
                 }
