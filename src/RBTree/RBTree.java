@@ -98,13 +98,10 @@ public class RBTree<T> {
             Comparable<T> d = (Comparable<T>) data;
             TreeNode current = Root;
             while(current!=NIL&&((Comparable<T>)current.Key).compareTo(data)!=0){
-                System.out.println("comparing between two comparables");
                 if (((Comparable<T>) data).compareTo(current.Key)<0) {
-                    System.out.println(data.toString()+" is smaller than "+current.Key.toString());
                     current = current.LeftChild;
                 }
                 else{
-                    System.out.println(data.toString()+" is bigger than "+current.Key.toString());
                     current = current.RightChild;
                 }
             }
@@ -139,7 +136,6 @@ public class RBTree<T> {
      * @param node 被左旋的节点
      * */
     private void leftRotate(TreeNode node){
-        System.out.println("left rotating!");
         TreeNode new_node = node.RightChild;
         /*把y的左子节点接到node上*/
         node.RightChild = new_node.LeftChild;
@@ -165,7 +161,6 @@ public class RBTree<T> {
      * @param node 被右旋的节点
      * */
     private void rightRotate(TreeNode node){
-        System.out.println("right rotating");
         TreeNode new_node = node.LeftChild;//放在node位置的新节点
         /*new_node的右子节点接到node的左边*/
         node.LeftChild = new_node.RightChild;
@@ -239,7 +234,6 @@ public class RBTree<T> {
     public void insert(T data){
         /*如果已经存在就不忙活了*/
         if(this.containsKey(data)){
-            System.out.println("no need for insert");
             return;
         }
 
@@ -247,7 +241,6 @@ public class RBTree<T> {
         TreeNode current = Root;//被插入的位置
         TreeNode father_current = NIL;//被插入位置的父节点
         while(current!=NIL){
-            System.out.println("cursoring");
             father_current = current;
             if(compare(data, current.Key)<0){
                 current = current.LeftChild;
@@ -258,13 +251,10 @@ public class RBTree<T> {
         }
         node.Parent = father_current;
         if(father_current==NIL){//根节点
-            System.out.println("111");
             this.Root = node;
         }else if(compare(data, father_current.Key)<0){
-            System.out.println("222");
             father_current.LeftChild = node;
         }else{
-            System.out.println("333");
             father_current.RightChild = node;
         }
         this.insertFix(node);
@@ -316,18 +306,52 @@ public class RBTree<T> {
 
                 if(sibling.LeftChild.Color==NodeColor.BLACK&&sibling.RightChild.Color==NodeColor.BLACK){
                     /*情况二：兄弟节点肯定是黑色，如果它的两个子节点也是黑色的，那就把兄弟节点变成红色的，然后把问题节点上移*/
-                    sibling.Color = NodeColor.BLACK;
+                    sibling.Color = NodeColor.RED;
                     target = target.Parent;
                 }
                 else{
-                    if(sibling.LeftChild.Color == NodeColor.BLACK){//情况三：兄弟节点左子节点是黑色，想办法转换成情况四
-
+                    if(sibling.RightChild.Color == NodeColor.BLACK){//情况三：兄弟节点右子节点是黑色，想办法转换成右子节点不是黑色的情况
+                        sibling.Color = NodeColor.RED;
+                        sibling.LeftChild.Color = NodeColor.BLACK;
+                        rightRotate(sibling);
+                        sibling = target.Parent.RightChild;
                     }
+                    //情况四：兄弟节点右子节点是红色，交换sibling（红）和target父节点（黑）的颜色使得target的父节点必定是黑色
+                    //然后左旋，并且把sibling的右子节点变成黑色
+                    sibling.Color = target.Parent.Color;
+                    target.Parent.Color = NodeColor.BLACK;
+                    leftRotate(target.Parent);
+                    sibling.RightChild.Color = NodeColor.BLACK;
+                    target = Root;
                 }
             }else{//右子节点
+                TreeNode sibling = target.Parent.LeftChild;
+                if(sibling.Color == NodeColor.RED){
+                    sibling.Color = NodeColor.BLACK;
+                    target.Parent.Color = NodeColor.RED;
+                    rightRotate(target.Parent);
+                    sibling = target.Parent.LeftChild;
+                }
 
+                if(sibling.LeftChild.Color == NodeColor.BLACK && sibling.RightChild.Color == NodeColor.BLACK) {
+                    sibling.Color = NodeColor.RED;
+                    target = target.Parent;
+                }else{
+                    if(sibling.LeftChild.Color == NodeColor.BLACK){
+                        sibling.Color = NodeColor.RED;
+                        sibling.RightChild.Color = NodeColor.BLACK;
+                        leftRotate(sibling);
+                        sibling = target.Parent.LeftChild;
+                    }
+                    sibling.Color = target.Parent.Color;
+                    target.Parent.Color = NodeColor.BLACK;
+                    rightRotate(target.Parent);
+                    sibling.LeftChild.Color = NodeColor.BLACK;
+                    target = Root;
+                }
             }
         }
+        target.Color = NodeColor.BLACK;
     }
 
     /**
@@ -347,7 +371,7 @@ public class RBTree<T> {
             problem = target.LeftChild;
             transplant(target, problem);
         }else{//有两个儿子，把右子树中最小的节点挪上来
-            target = minimalNode(target.RightChild);
+            target = minimalNode(origin.RightChild);
             original_color = target.Color;//这个点挪上去之后会变成被删除的点的颜色，所以只影响现在它的子树
             problem = target.RightChild;
             if(target.Parent == origin){// 被删除节点的右子树没有左子树
