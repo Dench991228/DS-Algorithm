@@ -302,7 +302,32 @@ public class RBTree<T> {
      * @param target 可能会有问题的子树的根节点
      * */
     private void fixDelete(TreeNode target){
+        while(target!=Root&&target.Color==NodeColor.BLACK){
+            if(target == target.Parent.LeftChild){//左子节点
+                TreeNode sibling = target.Parent.RightChild;
+                //情况一：兄弟节点是红色，那就变成黑色，父节点变成红色，然后左旋
+                //target对应的子树仍然黑色高度比别人少1，但是可以转换成情况2~4
+                if(sibling.Color == NodeColor.RED){
+                    sibling.Color = NodeColor.BLACK;
+                    target.Parent.Color = NodeColor.RED;
+                    leftRotate(target.Parent);
+                    sibling = target.Parent.RightChild;
+                }
 
+                if(sibling.LeftChild.Color==NodeColor.BLACK&&sibling.RightChild.Color==NodeColor.BLACK){
+                    /*情况二：兄弟节点肯定是黑色，如果它的两个子节点也是黑色的，那就把兄弟节点变成红色的，然后把问题节点上移*/
+                    sibling.Color = NodeColor.BLACK;
+                    target = target.Parent;
+                }
+                else{
+                    if(sibling.LeftChild.Color == NodeColor.BLACK){//情况三：兄弟节点左子节点是黑色，想办法转换成情况四
+
+                    }
+                }
+            }else{//右子节点
+
+            }
+        }
     }
 
     /**

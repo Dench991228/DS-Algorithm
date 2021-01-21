@@ -258,7 +258,7 @@ public class RBTree {
             origin_color = target.isRed();
             problem = target.getRightChild();//可能会出问题是因为最小节点要被拉上去，所以它的右子节点要被拉上来（这个节点必定没有左子节点）
             if(target.getParent() == origin){//如果被删除节点的右子节点没有左子树
-                problem.setParent(target);
+                //problem.setParent(target);
             }
             else{//被删除的节点的右子树有左子树
                 /*先把要挪上去的节点的右子树取代它的位置*/
