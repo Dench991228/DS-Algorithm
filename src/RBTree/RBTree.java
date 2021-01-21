@@ -7,6 +7,7 @@ import java.util.Comparator;
  * @param <T> 表示放在这个红黑树中的数据类型，如果继承了comparable接口，那么在构造这个红黑树的时候不需要提供Comparator，否则是需要的
  * */
 public class RBTree<T> {
+
     /**
      * 内部枚举类，用来表示红黑树节点的颜色
      * */
@@ -55,21 +56,50 @@ public class RBTree<T> {
         this.comparator = rb_tree_comparator;
     }
     /**
+     * 根据一个节点的Key去找相同的节点，如果没有就返回null
+     * @param data 被找的节点的key中的内容
+     * @return 包含key的节点
+     */
+    private TreeNode findNode(T data){
+        /*没有设置根节点，那就肯定没有*/
+        if(Root==null)return null;
+
+        if(data instanceof Comparable){//T 是一个Comparable类的情况
+            Comparable<T> d = (Comparable<T>) data;
+            TreeNode current = Root;
+            while(current!=NIL&&((Comparable<T>)current.Key).compareTo(data)!=0){
+                if (((Comparable<T>) current.Key).compareTo(data)<0) {
+                    current = current.LeftChild;
+                }
+                else{
+                    current = current.RightChild;
+                }
+            }
+            return current;
+        }
+        else{//提供Comparator的情况
+            if(this.comparator==null)throw new UnComparableException();
+            TreeNode current = Root;
+            while(current!=NIL&&this.comparator.compare(data, current.Key)!=0){
+                if(this.comparator.compare(data, current.Key)<0){
+                    current = current.LeftChild;
+                }
+                else{
+                    current = current.RightChild;
+                }
+            }
+            return current;
+        }
+    }
+    /**
      * 判断一个值是否存在
      * @param data 寻找的值
      * @return 这个值是不是在这颗红黑树里面
      * */
-    public boolean containsValue(T data){
-
+    public boolean containsKey(T data){
+        return this.findNode(data)!=null;
     }
-    /**
-     * 根据一个节点的Key去找相同的节点，如果没有就返回null
-     * @param key 被找的节点的Key
-     * @return 包含key的节点
-     */
-    private TreeNode findNode(T key){
 
-    }
     /**
      * 往红黑树中插入一个值，如果这个值已经存在，就不管了
      * @param data 被插入的数据
